@@ -1,6 +1,6 @@
 # Anti-Duplicator
 
-The script finds all files duplicates in specified directory and also in child directories. 
+The script finds all file duplicates in specified directory and also in child directories. 
 It compare name and size of files. 
  
 # Quickstart
