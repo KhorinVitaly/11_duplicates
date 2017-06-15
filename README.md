@@ -24,8 +24,8 @@ Example of using functions in code:
 ```
 import duplicates
 
-files = all_files(your_path)
-print(find_duplicates(files))
+files = find_files(your_path)
+print(recognize_duplicates(files))
 
 ```
 

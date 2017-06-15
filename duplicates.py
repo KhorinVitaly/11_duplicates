@@ -3,47 +3,39 @@ from os.path import isdir, getsize
 from sys import argv
 
 
-def all_files(dir_path):
-    dir_content = listdir(dir_path)
+def find_files(directory):
+    content = listdir(directory)
     files = []
 
-    for dir_item in dir_content:
-        file_path = dir_path + "/" + dir_item
-        if not isdir(file_path):
-            file_inf = {"name": dir_item, "size": getsize(file_path), "path": dir_path}
-            files.append(file_inf)
+    for item_name in content:
+        path = directory + "/" + item_name
+        if not isdir(path):
+            files.append({"name_and_size": item_name+str(getsize(path)), "path": path})
         else:
-            child_dir_files = all_files(file_path)
+            child_dir_files = find_files(path)
             files.extend(child_dir_files)
 
     return files
 
 
-def find_duplicates(files):
-    uniq_items = []
-    for file in files:
-        short_file_inf = {"name": file["name"], "size": file["size"]}
-        if short_file_inf not in uniq_items: uniq_items.append(short_file_inf)
-
+def recognize_duplicates(files):
+    unique_names_and_sizes = []
     duplicates = []
-    for item in uniq_items:
-        sub_duplicates = []
-        for file in files:
-            if file["name"] == item["name"] and file["size"] == item["size"]:
-                file_path = file["path"] + "/" + file["name"]
-                sub_duplicates.append(file_path)
 
-        if sub_duplicates.__len__() > 1:
-            duplicates.extend(sub_duplicates)
+    for item in files:
+        if item["name_and_size"] in unique_names_and_sizes:
+            duplicates.append(item["path"])
+        else:
+            unique_names_and_sizes.append(item["name_and_size"])
 
     return duplicates
 
 
 if __name__ == '__main__':
     try:
-        files = all_files(argv[1])
-        duplicates = find_duplicates(files)
-        if duplicates.__len__() == 0:
+        files = find_files(argv[1])
+        duplicates = recognize_duplicates(files)
+        if not duplicates:
             print("Duplicates not found")
         else:
             print("Directory contain duplicates:")
