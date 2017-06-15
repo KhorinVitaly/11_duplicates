@@ -35,16 +35,10 @@ if __name__ == '__main__':
     try:
         files = find_files(argv[1])
         duplicates = recognize_duplicates(files)
-        if not duplicates:
-            print("Duplicates not found")
-        else:
-            print("Directory contain duplicates:")
-            for item in duplicates: print(item)
+        for item in duplicates: print(item)
     except IndexError:
         print("Directory not specified!")
     except FileNotFoundError:
         print("Directory not found!")
     except NotADirectoryError:
         print("It is not a directory!")
-
-
