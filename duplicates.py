@@ -40,6 +40,7 @@ if __name__ == '__main__':
 
     duplicates = recognize_duplicates(files)
     if len(duplicates) > 0:
+        print("Directory contain duplicates:")
         for item in duplicates:
             print(item)
     else:
