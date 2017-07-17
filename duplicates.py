@@ -32,6 +32,15 @@ def recognize_duplicates(files):
 
 
 if __name__ == '__main__':
-    files = find_files(argv[1])
+    try:
+        files = find_files(argv[1])
+    except IndexError:
+        print("File not specified!")
+        exit()
+
     duplicates = recognize_duplicates(files)
-    for item in duplicates: print(item)
+    if len(duplicates) > 0:
+        for item in duplicates:
+            print(item)
+    else:
+        print("Duplicates not found!")
