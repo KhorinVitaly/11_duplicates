@@ -1,20 +1,20 @@
 from os import listdir
-from os.path import isdir, getsize
+from os.path import isdir, getsize, sep
 from sys import argv
+from operator import itemgetter
 
 
 def find_files(directory):
     content = listdir(directory)
     files = []
-
     for item_name in content:
-        path = directory + "/" + item_name
+        path = directory + sep + item_name
         if not isdir(path):
-            files.append({"name_and_size": item_name+str(getsize(path)), "path": path})
+            files.append((path, item_name + " " + str(getsize(path))))
         else:
             child_dir_files = find_files(path)
             files.extend(child_dir_files)
-
+    files.sort(key=itemgetter(1))
     return files
 
 
@@ -23,21 +23,27 @@ def recognize_duplicates(files):
     duplicates = []
 
     for item in files:
-        if item["name_and_size"] in unique_names_and_sizes:
-            duplicates.append(item["path"])
+        if item[1] in unique_names_and_sizes:
+            duplicates.append(item[0])
         else:
-            unique_names_and_sizes.append(item["name_and_size"])
-
+            unique_names_and_sizes.append(item[1])
     return duplicates
 
 
-if __name__ == '__main__':
+def fetch_files():
     try:
-        files = find_files(argv[1])
+        directory_path = argv[1]
+        files = find_files(directory_path)
+        return files
     except IndexError:
-        print("File not specified!")
-        exit()
+        print("Directory not specified!")
+    except FileNotFoundError:
+        print("Directory not found!")
+    exit()
 
+
+def print_duplicates():
+    files = fetch_files()
     duplicates = recognize_duplicates(files)
     if len(duplicates) > 0:
         print("Directory contain duplicates:")
@@ -45,3 +51,6 @@ if __name__ == '__main__':
             print(item)
     else:
         print("Duplicates not found!")
+
+if __name__ == '__main__':
+    print_duplicates()
